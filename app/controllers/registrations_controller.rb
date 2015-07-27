@@ -1,6 +1,9 @@
 class RegistrationsController < Devise::RegistrationsController
+  before_filter :load_plans
 
   def new
+    @subscription = Subscription.new
+    @plan = Plan.find(params[:plan_id])
     super
   end
 
@@ -22,10 +25,38 @@ class RegistrationsController < Devise::RegistrationsController
 
     generated_password = Devise.friendly_token.first(8)
     resource.password = generated_password
-    resource.save
+
+    # Here you call Stripe
+    #result = UserSignup.new(@user).sign_up(params[:stripeToken], params[:plan])
+
+    Rails.logger.info "RegistrationsController trying to register with Stripe.."
+
+    @stripe_sub = CreateSubscription.call(
+        @plan,
+        params[:email_address],
+        params[:stripeToken]
+    )
+    #if result.successful?
+    if !@stripe_sub.nil?
+      Rails.logger.info "RegistrationsController registered with Stripe!"
+      #TODO: add Stripe customer ID to user
+      resource.save
+    else
+      Rails.logger.error "RegistrationsController failed to register with Stripe!"
+      flash[:error] = "Could not register: either card details wrong or no connection to server"
+    end
 
     yield resource if block_given?
     if resource.persisted?
+      #TODO: store Subscription in the DB:
+
+      subscription = Subscription.new(
+          plan: plan,
+          user: user
+      )
+      subscription.stripe_id = @stripe_sub.id
+      subscription.save!
+
       if resource.active_for_authentication?
         set_flash_message :notice, :signed_up if is_flashing_format?
         sign_up(resource_name, resource)
@@ -47,5 +78,15 @@ class RegistrationsController < Devise::RegistrationsController
 
   def update
     super
+  end
+
+  protected
+
+  def load_plans
+    @plans = Plan.all
+    @plans.each do |row|
+      Rails.logger.info "Looping through the Plans.."
+      Rails.logger.info row.inspect
+    end
   end
 end
