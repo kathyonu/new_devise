@@ -24,14 +24,14 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    stripe_sub = CreateSubscription.call(
+    generated_password = CreateSubscription.call(
         @plan,
         params[:email_address],
         params[:stripeToken]
     )
 
     #resource_saved = resource.save
-    if !stripe_sub.nil?
+    if !generated_password.nil?
       user = User.find_by_email(params[:email_address])
       if !user.nil?
         resource_saved = true
@@ -39,7 +39,9 @@ class RegistrationsController < Devise::RegistrationsController
       else
         Rails.logger.error "RegistrationsController#create user is nil!"
       end
-      MyMailer.welcome(resource, {plan: @plan.id}).deliver_now if resource_saved
+      #Rails.logger.info "RegistrationsController#create: resource.email = " + resource.email +", "
+      MyMailer.welcome(resource, generated_password, {plan: @plan}).deliver_now if resource_saved
+      #MyMailer.confirmation_instructions(resource, generated_password, {plan: @plan.id}).deliver_now if resource_saved
     else
       Rails.logger.error "RegistrationsController#create failed to register with Stripe!"
       flash[:error] = "Could not register: either card details wrong or no connection to server"

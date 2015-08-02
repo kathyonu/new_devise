@@ -50,6 +50,6 @@ class CreateSubscription
     else
       #TODO: Flash Message to be handled in controller
     end
-    stripe_sub
+    generated_password
   end
 end
