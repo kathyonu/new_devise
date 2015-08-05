@@ -1,4 +1,5 @@
-Overriding Devise to Allow Registering Without a Password
-========================
+Accepting a Credit Card: a SaaS application in a nutshell (Stripe, Rails4, Devise3)
+===================================================================================
 
-For more details visit http://nikolov.me.uk/blog/2015/07/24/overriding-devise-to-skip-setting-of-password.html
+
+For more details visit http://nikolov.me.uk/blog/2015/08/02/accepting-credit-card-stripe-saas.html
