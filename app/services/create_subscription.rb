@@ -50,6 +50,6 @@ class CreateSubscription
     else
       #TODO: Flash Message to be handled in controller
     end
-    generated_password
+    return generated_password, user
   end
 end

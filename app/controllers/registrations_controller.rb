@@ -24,7 +24,7 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
 
-    generated_password = CreateSubscription.call(
+    generated_password, user = CreateSubscription.call(
         @plan,
         params[:email_address],
         params[:stripeToken]
@@ -32,14 +32,13 @@ class RegistrationsController < Devise::RegistrationsController
 
     #resource_saved = resource.save
     if !generated_password.nil?
-      user = User.find_by_email(params[:email_address])
       if !user.nil?
         resource_saved = true
         resource = user
       else
         Rails.logger.error "RegistrationsController#create user is nil!"
       end
-      #Rails.logger.info "RegistrationsController#create: resource.email = " + resource.email +", "
+      Rails.logger.info "RegistrationsController#create: resource.email = " + resource.email
       MyMailer.welcome(resource, generated_password, {plan: @plan}).deliver_now if resource_saved
       #MyMailer.confirmation_instructions(resource, generated_password, {plan: @plan.id}).deliver_now if resource_saved
     else
