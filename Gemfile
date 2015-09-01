@@ -9,6 +9,7 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'paper_trail', '~> 3.0.6'
 gem "stripe", '1.21'
+#gem "jquery-validation-rails"
 group :development, :test do
   gem 'byebug'
   gem 'web-console', '~> 2.0'
