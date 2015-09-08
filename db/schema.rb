@@ -11,10 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150730205354) do
+ActiveRecord::Schema.define(version: 20150808070613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "econfig_options", force: :cascade do |t|
+    t.string "key",   null: false
+    t.string "value"
+  end
+
+  add_index "econfig_options", ["key"], name: "index_econfig_options_on_key", unique: true, using: :btree
 
   create_table "plans", force: :cascade do |t|
     t.string   "stripe_id"

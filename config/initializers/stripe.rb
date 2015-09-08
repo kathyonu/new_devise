@@ -1,6 +1,6 @@
 Rails.configuration.stripe = {
     publishable_key: RailsDevise.config.STRIPE_PUBLISHABLE_KEY,
-    secret_key:      RailsDevise.config.STRIPE_SECRET_KEY
+    secret_key:      RailsDevise.config.STRIPE_API_KEY
 }
 
 Stripe.api_key = \

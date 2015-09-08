@@ -19,6 +19,7 @@
 db/*.sqlite3
 /db/*.sqlite3-journal
 /log/*
+/log/*.log
 /tmp/*
 
 # various artifacts
@@ -76,3 +77,6 @@ pickle-email-*.html
 # Environment files that may contain sensitive data
 .env
 .powenv
+
+# StripeMock server
+/stripe-mock-server.log
